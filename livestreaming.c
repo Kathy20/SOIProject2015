@@ -27,7 +27,8 @@
     socketfd = socket(AF_INET,SOCK_STREAM,0);   
     printf("Socket Creation: %s\n",strerror(errno));   
      
-    filefd = open("/Songs/cat.mp3",O_RDONLY);   
+     filefd = open("/home/anirudh/Desktop/Live/live_stream.ogg",O_RDONLY);    
+    //filefd = open("/Songs/cat.mp3",O_RDONLY);   
     printf("File open: %s\n",strerror(errno));   
      
     bzero(&sockserv,sizeof(sockserv));   
