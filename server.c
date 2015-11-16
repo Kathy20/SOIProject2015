@@ -6,8 +6,32 @@
    Kathy Brenes Guerrero
 
    Principios de Sistemas Operativos
-
    Fecha: 17 de Noviembre del 2015
+
+    El Servidor
+—————————
+
+1) El servidor deberá estar programado completamente sobre un sistema 
+operativo Linux y en el lenguaje C, usando el compilador gcc. 
+2) Deberá usar sockets para la comunicación de los clientes remotos 
+hacia un puerto y una IP conocidos el cual deberá establecer o bien 
+configurar una resolución de nombres vía DNS o similar. 
+3)El servidor deberá atender las solicitudes y al recibir una conexión 
+deberá crear un proceso thread para que atienda a dicho cliente. 
+4) Cada thread deberá enviar los datos de música al cliente el cual 
+va a reproducir los datos conforme los recibe, se puede utilizar 
+un buffer para almacenamiento temporal de información que se vaya 
+a reproducir.
+5) El programa servidor deberá informar mediante una bitácora en 
+pantalla de las acciones que ocurren en el sistema tales como: 
+un usuario conectado, un cliente que reproduce una canción, 
+identificando dicho cliente con su nombre de inicio de sesión y 
+la canción que solicita. Dicha información debe quedar almacenada 
+en un archivo de texto en el servidor. 
+6) El servidor leerá la música desde una carpeta en el sistema 
+donde corre y debe ser fácil poder agregar y registrar nueva 
+música en el sistema. Es decir, la música disponible no debería 
+estar “alambrada” en el código .
 
 */
 #include <stdio.h>
@@ -15,6 +39,7 @@
 #include <string.h>   
 #include <pthread.h>
 #include <unistd.h>   
+#include <errno.h> 
 #include <netinet/in.h>
 #include <arpa/inet.h>
 #include <sys/un.h>
@@ -22,22 +47,19 @@
 #include <sys/socket.h>
 
 
-void *thread_function(void *arg);
+void *connection_client(void *arg);
 
 int main ()
 {
-  int server_sockfd, client_sockfd;
+  int socket_server, socket_cliente;
   int server_len, client_len;
   struct sockaddr_in server_address;
   struct sockaddr_in client_address;
 
-  // 2. create a socket for the client
-
-  server_sockfd = socket(AF_INET, SOCK_STREAM, 0);
-  if (server_sockfd == -1)
-    {
-        printf("Could not create socket");
-    }
+  
+  socket_server = socket(AF_INET, SOCK_STREAM, 0);
+  printf("Creation server socket for the client: %s\n",strerror(errno));  
+  
 
   // 3. Name the socket
 
@@ -45,22 +67,22 @@ int main ()
   server_address.sin_addr.s_addr = htonl(INADDR_ANY); //inet_addr("127.0.0.1");
   server_address.sin_port = htons(9737);
   server_len = sizeof(server_address);
-  if (bind(server_sockfd, (struct sockaddr *)&server_address, server_len) < 0) {
+  if (bind(socket_server, (struct sockaddr *)&server_address, server_len) < 0) {
     //print the error message
         perror("bind failed. Error");
         return 1;
   }
 
   // Igual al local server
-  listen(server_sockfd, 1);
+  listen(socket_server, 1);
   while(1) {
     pthread_t a_thread;
     
-    while( (client_sockfd = accept(server_sockfd, (struct sockaddr *)&client_address, (socklen_t*)&client_len)) )
+    while( (socket_cliente = accept(socket_server, (struct sockaddr *)&client_address, (socklen_t*)&client_len)) )
       {
           puts("Connection accepted");
            
-          if( pthread_create( &a_thread, NULL ,  thread_function , (void*) &client_sockfd) < 0)
+          if( pthread_create( &a_thread, NULL ,  connection_client , (void*) &socket_cliente) < 0)
           {
               perror("could not create thread");
               //return 1;
@@ -75,24 +97,20 @@ int main ()
   }
 }
 
-void *thread_function(void *socket_desc)
+void *connection_client(void *socket_desc)
 {
   int sock = *(int*)socket_desc;
-    int read_size;
-    char *message , client_message[2000];
-//--------------------
-    int sockfd, clientfd;
-    struct sockaddr_in address, address2;
-    int len, len2;
-     
-    sockfd = socket(AF_INET, SOCK_STREAM, 0);
-    if (sockfd == -1)
-    {
-        printf("Could not create socket");
-    }
-
-    srand(rand());
-    int port = rand() % 10000 + 2000;
+  int read_size;
+  char *message , client_message[2000];
+  //--------------------
+  int sockfd, clientfd;
+  struct sockaddr_in address, address2;
+  int len, len2;
+  /* Creación del socket */  
+  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  printf("Socket Creation: %s\n",strerror(errno)); 
+  srand(rand());
+    int port = rand() % 10000 + 2350;
     printf("new port: %i\n", port);
 
     address.sin_family = AF_INET;
@@ -141,6 +159,6 @@ void *thread_function(void *socket_desc)
         perror("recv failed");
     }
   
-    //close(server_sockfd);
+    //close(socket_server);
     return 0;
 }
