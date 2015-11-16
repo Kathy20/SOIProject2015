@@ -51,12 +51,12 @@ void *connection_client(void *arg);
 
 int main ()
 {
+  int listenning=1;
   int socket_server, socket_cliente;
   int server_len, client_len;
   struct sockaddr_in server_address;
   struct sockaddr_in client_address;
-
-  
+  //Create a main socket server for the clients
   socket_server = socket(AF_INET, SOCK_STREAM, 0);
   printf("Creation server socket for the client: %s\n",strerror(errno));  
   
@@ -67,15 +67,12 @@ int main ()
   server_address.sin_addr.s_addr = htonl(INADDR_ANY); //inet_addr("127.0.0.1");
   server_address.sin_port = htons(9737);
   server_len = sizeof(server_address);
-  if (bind(socket_server, (struct sockaddr *)&server_address, server_len) < 0) {
-    //print the error message
-        perror("bind failed. Error");
-        return 1;
-  }
-
-  // Igual al local server
+  bind(socket_server, (struct sockaddr *)&server_address, server_len);
+  printf("Server socket Bind (assigned address): %s\n",strerror(errno));  
+  //Request locales
   listen(socket_server, 1);
-  while(1) {
+  printf("Server socket Listen: %s\n",strerror(errno));
+  while(listenning) {
     pthread_t a_thread;
     
     while( (socket_cliente = accept(socket_server, (struct sockaddr *)&client_address, (socklen_t*)&client_len)) )
