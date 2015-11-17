@@ -17,21 +17,14 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include "client.h"
 
 
 //variables globales
 GtkBuilder *gtkBuilder;
 GtkWidget *window;
-GtkWidget *txtUser;
 
 void imprimir(){
-	char user[30];
-	char password[30];
-	printf("HOla\n");
-	strcpy(user,gtk_entry_get_text(GTK_ENTRY(txtUser)));
-	printf("User\n");
-	printf("User= %s \n",user);
+	printf("Play\n");
 }
 
 void on_window_destroy (GtkWidget *object, gpointer user_data) {
@@ -41,32 +34,25 @@ void on_window_destroy (GtkWidget *object, gpointer user_data) {
 
 int main(int argc, char *argv[])
 {
-	GtkWidget *btnLogin;
-	GdkColor color;
-    color.red = 0000;
-    color.green = 0000;
-    color.blue = 0;
-
+	GtkWidget *btnPlay;
+	GdkColor color;    
     GdkColor color2;
-    color2.red = 47;
-    color2.green = 79;
-    color2.blue = 79;
-
+    
 	gtk_init(&argc, &argv);
 	gtkBuilder = gtk_builder_new();
-	gtk_builder_add_from_file(gtkBuilder, "windowInitial.glade", NULL);
-	window = GTK_WIDGET(gtk_builder_get_object(gtkBuilder, "windowInitial"));
-	gtk_widget_set_size_request(GTK_WINDOW(window),500,200);
+	gtk_builder_add_from_file(gtkBuilder, "windowPlayMusic.glade", NULL);
+	window = GTK_WIDGET(gtk_builder_get_object(gtkBuilder, "windowPlay"));
+	gtk_widget_set_size_request(GTK_WINDOW(window),500,400);
 	gdk_color_parse ("#008B8B", &color2);
 	gtk_widget_modify_bg(GTK_WINDOW(window), GTK_STATE_NORMAL, &color2);
 
-	btnLogin = GTK_WIDGET (gtk_builder_get_object (gtkBuilder, "btnLogin"));
-	txtUser= GTK_WIDGET (gtk_builder_get_object (gtkBuilder, "txtUser"));
+	btnPlay = GTK_WIDGET (gtk_builder_get_object (gtkBuilder, "btnPlay"));
+	/*txtUser= GTK_WIDGET (gtk_builder_get_object (gtkBuilder, "txtUser"));
 	gdk_color_parse ("#ffffff", &color);
-	gtk_widget_modify_text(GTK_WIDGET(btnLogin),GTK_STATE_NORMAL, &color);	
+	gtk_widget_modify_text(GTK_WIDGET(btnLogin),GTK_STATE_NORMAL, &color);	*/
 	g_signal_connect (window, "destroy", G_CALLBACK (on_window_destroy), NULL);
-	gtk_widget_set_tooltip_text (btnLogin, "Proporcione los datos indicados para realizar el inicio de sesión. ");
-	g_signal_connect (btnLogin, "clicked",G_CALLBACK (imprimir),NULL);
+	gtk_widget_set_tooltip_text (btnPlay, "Reproducir aleatoriamente las canciones suministradas. ");
+	g_signal_connect (btnPlay, "clicked",G_CALLBACK (imprimir),NULL);
 	g_object_unref(G_OBJECT(gtkBuilder));
 	gtk_widget_show(window);
 	gtk_main();

@@ -96,11 +96,11 @@ void *connection_client(void *socket_desc)
   int read_size;
   char *message , client_message[2000];
   //--------------------
-  int sockfd, clientfd;
+  int socket_server, clientfd;
   struct sockaddr_in address, address2;
   int len, len2;
   /* Creación del socket */  
-  sockfd = socket(AF_INET, SOCK_STREAM, 0);
+  socket_server = socket(AF_INET, SOCK_STREAM, 0);
   printf("Socket Creation: %s\n",strerror(errno)); 
   srand(rand());
     int port = rand() % 10000 + 2350;
@@ -110,12 +110,12 @@ void *connection_client(void *socket_desc)
   address.sin_addr.s_addr = htonl(INADDR_ANY); //inet_addr("127.0.0.1");
   address.sin_port = htons(port);
   len = sizeof(address);
-  bind(sockfd, (struct sockaddr *)&address, len); 
+  bind(socket_server, (struct sockaddr *)&address, len); 
   printf("Client socket Bind (assigned address): %s\n",strerror(errno));  
   write(sock, &port , sizeof(int));
   close(sock);
-  listen(sockfd, 1);
-  clientfd = accept(sockfd, (struct sockaddr *)&address2, (socklen_t*)&len2);
+  listen(socket_server, 1);
+  clientfd = accept(socket_server, (struct sockaddr *)&address2, (socklen_t*)&len2);
   puts("conecction accepted thread");
     
     //close(socket_server);
