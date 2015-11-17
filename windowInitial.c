@@ -1,7 +1,23 @@
+/* Instituto Tecnológico de Costa Rica.
+   Centro Académico de San José
+   Ingeniería en Computación
+
+   Estudiante
+   Kathy Brenes Guerrero
+
+   Principios de Sistemas Operativos
+   Fecha: 17 de Noviembre del 2015
+
+   Interfaz para la pantalla principal del Spotify
+
+ */
+
+
 #include <gtk/gtk.h>
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include "client.h"
 
 
 //variables globales
@@ -11,7 +27,15 @@ GtkWidget *txtUser;
 GtkWidget *txtPassword;
 
 void imprimir(){
+	char user[30];
+	char password[30];
 	printf("HOla\n");
+	strcpy(user,gtk_entry_get_text(GTK_ENTRY(txtUser)));
+	printf("User\n");
+	printf("User= %s \n",user);
+	strcpy(password,gtk_entry_get_text(GTK_ENTRY(txtPassword)));
+	printf("User= %s, Password= %s \n",user, password);
+	int solicitud= solicitudCliente(user, password);
 }
 void on_window_destroy (GtkWidget *object, gpointer user_data) {
 	gtk_main_quit();
