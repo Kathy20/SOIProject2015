@@ -1,23 +1,36 @@
- #include<stdio.h>   
-  #include<stdlib.h>   
-  #include<string.h>   
-  #include<errno.h>   
-  #include<arpa/inet.h>   
-  #include<sys/socket.h>   
-  #include<fcntl.h>   
-  #include<signal.h>   
-  #include<unistd.h>   
+/* Instituto Tecnológico de Costa Rica.
+   Centro Académico de San José
+   Ingeniería en Computación
+
+   Estudiante
+   Kathy Brenes Guerrero
+
+   Principios de Sistemas Operativos
+
+   Fecha: 17 de Noviembre del 2015
+
+*/
    
-  int main(){   
+#include <stdio.h>   
+#include <stdlib.h>   
+#include <string.h>   
+#include <errno.h>   
+#include <arpa/inet.h>   
+#include <sys/socket.h>   
+#include <fcntl.h>   
+#include <signal.h>   
+#include <unistd.h>   
    
-    struct sockaddr_in sockserv,sockclient;   
-    int socketfd,clientfd;   
-    socklen_t clientsocklen;   
+int main(){   
+  
+  struct sockaddr_in sockserv,sockclient;   
+  int socketfd,clientfd;   
+  socklen_t clientsocklen;   
      
-    int filefd;   
-    int cnt;   
-    int finalcnt = 0;   
-    int chancecnt;   
+  int filefd;   
+  int cnt;   
+  int finalcnt = 0;   
+  int chancecnt;   
      
     char buff[BUFSIZ],buff2[BUFSIZ];   
      

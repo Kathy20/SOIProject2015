@@ -59,10 +59,6 @@ int main ()
   //Create a main socket server for the clients
   socket_server = socket(AF_INET, SOCK_STREAM, 0);
   printf("Creation server socket for the client: %s\n",strerror(errno));  
-  
-
-  // 3. Name the socket
-
   server_address.sin_family = AF_INET;
   server_address.sin_addr.s_addr = htonl(INADDR_ANY); //inet_addr("127.0.0.1");
   server_address.sin_port = htons(9737);
@@ -114,48 +110,14 @@ void *connection_client(void *socket_desc)
   address.sin_addr.s_addr = htonl(INADDR_ANY); //inet_addr("127.0.0.1");
   address.sin_port = htons(port);
   len = sizeof(address);
-  if (bind(sockfd, (struct sockaddr *)&address, len) < 0) {
-    //print the error message
-        perror("bind failed. Error");
-        //return 1;
-  }
-//--------------
-   write(sock, &port , sizeof(int));
-    close(sock);
-
-    listen(sockfd, 1);
-
-    FILE* fd = NULL;
-
-    fd = fopen("alert.mp3", "r");
-    char b;
-    int flag;
-
-    while (b = fgetc(fd) != EOF) {
-      printf("c = %c\n", b);
-    }
-
-    clientfd = accept(sockfd, (struct sockaddr *)&address2, (socklen_t*)&len2);
-    puts("conecction accepted thread");
-    message = "Now type something and i shall repeat what you type \n";
-  write(clientfd, message , strlen(message));
-
-    while((read_size = recv(sockfd , &flag, sizeof(int) , 0)) > 0 && (b = fgetc(fd)) != EOF)
-    {
-    write(clientfd , &b , sizeof(char));
-    printf("b = %c", b);
-  }
-     
-    if(read_size == 0)
-    {
-        puts("Client disconnected");
-        fflush(stdout);
-    }
-    else if(read_size == -1)
-    {
-        perror("recv failed");
-    }
-  
+  bind(sockfd, (struct sockaddr *)&address, len); 
+  printf("Client socket Bind (assigned address): %s\n",strerror(errno));  
+  write(sock, &port , sizeof(int));
+  close(sock);
+  listen(sockfd, 1);
+  clientfd = accept(sockfd, (struct sockaddr *)&address2, (socklen_t*)&len2);
+  puts("conecction accepted thread");
+    
     //close(socket_server);
     return 0;
 }
